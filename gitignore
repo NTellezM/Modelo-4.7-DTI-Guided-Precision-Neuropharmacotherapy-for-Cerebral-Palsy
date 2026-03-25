@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Rust
+target/
+Cargo.lock
+
+# FEniCS / FFC cache
+.cache/
+fenics_cache/
+__fenics_cache__/
+
+# Data — no subir NIfTI ni mallas de pacientes reales
+data/
+!data/.gitkeep
+output/
+!output/.gitkeep
+
+# Datos sintéticos sí se permiten (generados por scripts)
+!data/synthetic/.gitkeep
+!data/virtual_patient/.gitkeep
+
+# NIfTI — nunca subir datos de pacientes
+*.nii
+*.nii.gz
+*.mgz
+*.dcm
+
+# Mallas grandes
+*.h5
+*.xdmf
+!data/synthetic/*.xdmf
+!data/virtual_patient/*.xdmf
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs de simulación
+*.log
+!docs/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Coverage
+.coverage
+htmlcov/
