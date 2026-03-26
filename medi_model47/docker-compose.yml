@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # Paso 1: Generación de malla (requiere Gmsh)
+  geom:
+    build: ./geom_preprocessing
+    volumes:
+      - ./data:/data:ro
+      - ./output:/output
+    command: >
+      python -m geom_preprocessing.cli build
+        --gel /data/synthetic/gel_mask.nii.gz
+        --tissue /data/synthetic/tissue_mask.nii.gz
+        --nac /data/synthetic/nac_mask.nii.gz
+        --smooth
+        --output /output/mesh
+
+  # Paso 2: Mapeo de tensores DTI (requiere dti_mapper Rust)
+  dti:
+    build: ./dti_mapper
+    volumes:
+      - ./data:/data:ro
+      - ./output:/output
+    depends_on:
+      geom:
+        condition: service_completed_successfully
+    command: >
+      python -m dti_mapper.cli map
+        --dti /data/synthetic/dti.nii.gz
+        --mesh /output/mesh/mesh.xdmf
+        --output /output/tensors/tensors.h5
+        --validate
+
+  # Paso 3: Simulación FEniCS (modo normal)
+  fenics:
+    build: ./fenics_solver
+    volumes:
+      - ./data:/data:ro
+      - ./output:/output
+    depends_on:
+      dti:
+        condition: service_completed_successfully
+    command: >
+      python3 scripts/solver.py
+        --mesh /output/mesh
+        --tensors /output/tensors/tensors.h5
+        --output /output/results
+
+  # Paso 3b: Simulación FEniCS con adicción
+  fenics-addiction:
+    build: ./fenics_solver
+    volumes:
+      - ./data:/data:ro
+      - ./output:/output
+    depends_on:
+      dti:
+        condition: service_completed_successfully
+    command: >
+      python3 scripts/run_pipeline.py
+        --mesh-input /output/mesh/mesh.xdmf
+        --synthetic --addiction --nac-tag 3
+        --output /output/results_addiction
+        --dt 0.05 --T-final 100.0
+    profiles:
+      - addiction
+
+  # Test de módulos de adicción (sin dependencias)
+  test-addiction:
+    build: ./fenics_solver
+    command: python3 scripts/test_addiction.py
+    profiles:
+      - test

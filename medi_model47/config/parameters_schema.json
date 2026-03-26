@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Modelo 4.7 Pipeline Config",
+  "type": "object",
+  "properties": {
+    "gel_mask": {"type": "string"},
+    "tissue_mask": {"type": "string"},
+    "nac_mask": {"type": "string"},
+    "dti_file": {"type": "string"},
+    "mesh_dir": {"type": "string"},
+    "tensor_dir": {"type": "string"},
+    "results_dir": {"type": "string"},
+    "refine": {"type": "number", "minimum": 0.01},
+    "coarse": {"type": "number", "minimum": 0.1},
+    "subdomains": {"type": "array", "items": {"type": "integer"}},
+    "simulation": {
+      "type": "object",
+      "required": ["dt", "T_final", "theta", "D_isotropic"],
+      "properties": {
+        "dt": {"type": "number", "minimum": 0},
+        "T_final": {"type": "number", "minimum": 0},
+        "theta": {"type": "number", "minimum": 0, "maximum": 1},
+        "k_elimination": {"type": "number"},
+        "D_scale": {"type": "number"},
+        "D_isotropic": {"type": "number"},
+        "output_interval": {"type": "integer", "minimum": 1}
+      }
+    },
+    "addiction": {
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "nac_tag": {"type": "integer"},
+        "plasticity": {
+          "type": "object",
+          "required": ["alpha", "beta", "R_th", "C50", "n_hill", "dt_plastic"],
+          "properties": {
+            "alpha": {"type": "number"},
+            "beta": {"type": "number"},
+            "R_th": {"type": "number"},
+            "C50": {"type": "number"},
+            "n_hill": {"type": "integer"},
+            "dt_plastic": {"type": "number"}
+          }
+        },
+        "mpc": {
+          "type": "object",
+          "required": ["q_target", "P_min", "P_max", "horizon", "dt_control"],
+          "properties": {
+            "q_target": {"type": "number"},
+            "P_min": {"type": "number"},
+            "P_max": {"type": "number"},
+            "delta_P_max": {"type": "number"},
+            "horizon": {"type": "integer"},
+            "dt_control": {"type": "number"},
+            "lambda_reg": {"type": "number"}
+          }
+        }
+      }
+    }
+  },
+  "required": ["gel_mask", "tissue_mask", "dti_file", "mesh_dir", "results_dir", "simulation"]
+}

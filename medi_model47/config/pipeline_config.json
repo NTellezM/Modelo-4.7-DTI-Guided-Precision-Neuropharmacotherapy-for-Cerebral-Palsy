@@ -1,0 +1,48 @@
+{
+  "gel_mask": "data/synthetic/gel_mask.nii.gz",
+  "tissue_mask": "data/synthetic/tissue_mask.nii.gz",
+  "nac_mask": "data/synthetic/nac_mask.nii.gz",
+  "dti_file": "data/synthetic/dti.nii.gz",
+  "mesh_dir": "output/mesh",
+  "tensor_dir": "output/tensors",
+  "results_dir": "output/results",
+  "refine": 0.2,
+  "coarse": 1.5,
+  "smooth": true,
+  "subdomains": [1, 2, 3],
+
+  "simulation": {
+    "dt": 60.0,
+    "T_final": 86400.0,
+    "theta": 1.0,
+    "k_elimination": 0.0,
+    "D_scale": 1.0,
+    "D_isotropic": 1e-3,
+    "C0": 1.0,
+    "C0_region": "center",
+    "C0_radius": 2.0,
+    "output_interval": 10
+  },
+
+  "addiction": {
+    "enabled": true,
+    "nac_tag": 3,
+    "plasticity": {
+      "alpha": 1e-7,
+      "beta": 1e-8,
+      "R_th": 0.5,
+      "C50": 0.2,
+      "n_hill": 2,
+      "dt_plastic": 86400
+    },
+    "mpc": {
+      "q_target": 0.2,
+      "P_min": 1e-9,
+      "P_max": 1e-6,
+      "delta_P_max": 1e-7,
+      "horizon": 20,
+      "dt_control": 3600,
+      "lambda_reg": 0.01
+    }
+  }
+}

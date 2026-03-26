@@ -1,0 +1,44 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "dti_mapper"
+version = "0.1.0"
+description = "Log-Euclidean DTI tensor interpolation onto FEM meshes"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "nibabel>=5.0",
+    "meshio>=5.3",
+    "h5py>=3.9",
+    "click>=8.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-benchmark>=4.0",
+]
+
+[project.scripts]
+dti-mapper = "dti_mapper.cli:main"
+
+[tool.maturin]
+python-source = "python"
+module-name = "dti_mapper._rust"
+features = ["pyo3/extension-module"]
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 99
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "ANN", "S", "B"]
+ignore = ["ANN101", "ANN102", "S101"]
